@@ -1,0 +1,35 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .product-image-details{
+        width: 200px;
+        height: 200px;
+    }
+</style>
+
+<div class="recipe-container">
+    <div class="recipe-page">
+        <h1> Product List</h1>
+    </div>
+    {% for prod in product %}
+        <div class="recipe-box">
+            <div class="post-entry">
+                <div class="recipe-title">
+                    <h4><a href="{% url 'product_detail' prod.pk %}">{{ prod.name }}</a></h4>
+                </div>
+                <div class="recipe-image">
+                    {% if prod.image %}
+                        <a href="{% url 'product_detail' prod.pk %}">
+                            <img src="{{ prod.image.url }}" alt="Post Image"  class="product-image-details"> <!-- Adjusted image styling -->
+                        </a>
+                    {% else %}
+                        <p>No image available</p> <!-- Optional message for posts without images -->
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

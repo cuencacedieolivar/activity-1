@@ -1,0 +1,71 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .product-image-details{
+        width: 200px;
+        height: 200px;
+    }
+</style>
+<div class="recipe-detail">
+    <div class="left-column">
+        <div class="post-actions">
+            {% if user == products.author %}
+                <a href="{% url 'product_update' products.pk %}">+ Edit Blog</a>
+                <a href="{% url 'product_delete' products.pk %}">- Delete Blog</a>
+            {% endif %}
+        </div>
+         <div class="recipe-detail-image">
+            {% if products.image %}
+                <img class="product-image-details" src="{{ products.image.url }}" alt="Post Image">
+            {% else %}
+                <p>No image available for this recipe.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="right-column">
+          <div class="recipe-box-detail">
+        <div class="title">
+                 <h1>{{ products.name }}</h1>
+        </div>
+
+
+
+
+        <div class="description">
+                 <p>
+                     {{ products.category }}
+                 </p>
+        </div>
+
+        <div class="instruction">
+            <p>
+                  {{ products.price }}
+            </p>
+
+        </div>
+        <div class="recipes-creation">
+            <p>
+                  {{ products.description }}
+            </p>
+
+        </div>
+        <div class="author">
+            <p>
+                   {{ products.stock }}
+            </p>
+
+        </div>
+        <div class="category">
+            <p>
+                    {{ products.type }}
+            </p>
+
+        </div>
+
+    </div>
+    </div>
+
+</div>
+
+{% endblock content %}
