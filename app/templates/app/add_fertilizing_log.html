@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Fertilizing Log</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Add Fertilizing Log for {{ plant.name }}</h1>
+    </header>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Fertilizing Log</button>
+    </form>
+    <a href="{% url 'plant_dashboard' %}">Back to Dashboard</a>
+</body>
+</html>

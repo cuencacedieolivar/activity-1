@@ -1,48 +1,62 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 
-#  i create this for organizing the tools and plants into categpries
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField()
+# User Profile Model to extend user information
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    favorite_plant = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.user.username} Profile'
 
-# Product model for items to be sold on the site
-class Product(models.Model):
-    CATEGORY_CHOICES = [
-        ('Tool', 'Tool'),
-        ('Plant', 'Plant'),
-    ]
+# Plant Model
+class Plant(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField()
-    stock = models.PositiveIntegerField()
-    type = models.CharField(max_length=10, choices=CATEGORY_CHOICES)
-    image = models.ImageField(upload_to='products/')  # Requires pillow package
-
-    def __str__(self):
-        return self.name
-
-# Order model to track user orders
-class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    order_date = models.DateTimeField(auto_now_add=True)
+    date_planted = models.DateField()
+    growth_stage = models.CharField(max_length=100, choices=[
+        ('Seedling', 'Seedling'),
+        ('Young Plant', 'Young Plant'),
+        ('Mature Plant', 'Mature Plant'),
+        ('Flowering', 'Flowering'),
+        ('Dormant', 'Dormant'),
+    ])
+    image = models.ImageField(upload_to='plants/', null=True, blank=True)
 
     def __str__(self):
-        return f"Order {self.id} by {self.user.username}"
+        return f'{self.name} ({self.user.username})'
 
-# Customer reviews for products
-class Review(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField()
-    comment = models.TextField()
-    review_date = models.DateTimeField(auto_now_add=True)
+    def days_since_planted(self):
+        return (date.today() - self.date_planted).days
+
+# Watering Log Model
+class WateringLog(models.Model):
+    plant = models.ForeignKey(Plant, related_name='waterings', on_delete=models.CASCADE)
+    date_watered = models.DateField()
+    amount = models.FloatField(help_text="Amount of water in liters")
 
     def __str__(self):
-        return f"Review by {self.user.username} for {self.product.name}"
+        return f'Watered {self.plant.name} on {self.date_watered}'
+
+# Fertilizing Log Model
+class FertilizingLog(models.Model):
+    plant = models.ForeignKey(Plant, related_name='fertilizations', on_delete=models.CASCADE)
+    date_fertilized = models.DateField()
+    fertilizer_type = models.CharField(max_length=100)
+    amount = models.FloatField(help_text="Amount of fertilizer used in grams")
+
+    def __str__(self):
+        return f'Fertilized {self.plant.name} on {self.date_fertilized}'
+
+# Growth Log Model
+class GrowthLog(models.Model):
+    plant = models.ForeignKey(Plant, related_name='growth_logs', on_delete=models.CASCADE)
+    date_logged = models.DateField()
+    previous_growth_stage = models.CharField(max_length=100, choices=Plant._meta.get_field('growth_stage').choices)
+    new_growth_stage = models.CharField(max_length=100, choices=Plant._meta.get_field('growth_stage').choices)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.plant.name} growth update on {self.date_logged}'

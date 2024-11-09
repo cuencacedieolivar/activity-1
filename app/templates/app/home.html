@@ -1,8 +1,9 @@
-{% extends 'app/base.html' %}
-{% load static %}
-{% block content %}
-<h1>
-  this is home
-</h1>
+{% extends 'base.html' %}
 
-{% endblock content %}
+{% block title %}Home | Plant Monitoring{% endblock %}
+
+{% block content %}
+    <h2>Welcome to the Plant Monitoring System!</h2>
+    <p>Manage and track the growth of your plants with ease. Add plants, log watering, fertilizing, and growth stages to keep them healthy.</p>
+    <p>Start by exploring your <a href="{% url 'plant_dashboard' %}">dashboard</a> or <a href="{% url 'add_plant' %}">add a new plant</a>.</p>
+{% endblock %}
