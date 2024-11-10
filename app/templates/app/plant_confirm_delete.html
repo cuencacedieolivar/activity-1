@@ -1,0 +1,10 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+    <h1>Are you sure you want to delete "{{ plant.name }}"?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm Deletion</button>
+        <a href="{% url 'plant_list' %}">Cancel</a>
+    </form>
+{% endblock %}

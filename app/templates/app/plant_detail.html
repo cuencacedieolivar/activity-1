@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="plant-detail">
+    <h1>{{ plant.name }}</h1>
+    <img src="{{ plant.image.url }}" alt="{{ plant.name }}">
+    <h2>Species: {{ plant.species }}</h2>
+    <p>{{ plant.description }}</p>
+    <h3>Care Instructions:</h3>
+    <p>{{ plant.care_instructions }}</p>
+
+    <h3>Care Log</h3>
+    <ul>
+      {% for log in plant.care_logs.all %}
+        <li><strong>{{ log.action }}:</strong> {{ log.details }} ({{ log.date }})</li>
+      {% endfor %}
+    </ul>
+
+    <h3>Observations</h3>
+    <ul>
+      {% for observation in plant.observations.all %}
+        <li>{{ observation.observation }} ({{ observation.date }})</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

@@ -1,62 +1,56 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import date
 
-# User Profile Model to extend user information
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    favorite_plant = models.CharField(max_length=100, null=True, blank=True)
+
+# Plant categories to classify plant types
+class PlantCategory(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return self.name
 
-# Plant Model
+
+# Represents a plant with essential details
 class Plant(models.Model):
     name = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_planted = models.DateField()
-    growth_stage = models.CharField(max_length=100, choices=[
-        ('Seedling', 'Seedling'),
-        ('Young Plant', 'Young Plant'),
-        ('Mature Plant', 'Mature Plant'),
-        ('Flowering', 'Flowering'),
-        ('Dormant', 'Dormant'),
-    ])
-    image = models.ImageField(upload_to='plants/', null=True, blank=True)
+    species = models.CharField(max_length=100)
+    category = models.ForeignKey(PlantCategory, on_delete=models.CASCADE, related_name='plants')
+    description = models.TextField()
+    care_instructions = models.TextField()  # an  instruction and info like watering
+    image = models.ImageField(upload_to='plants/')
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.name} ({self.user.username})'
+        return self.name
 
-    def days_since_planted(self):
-        return (date.today() - self.date_planted).days
 
-# Watering Log Model
-class WateringLog(models.Model):
-    plant = models.ForeignKey(Plant, related_name='waterings', on_delete=models.CASCADE)
-    date_watered = models.DateField()
-    amount = models.FloatField(help_text="Amount of water in liters")
-
-    def __str__(self):
-        return f'Watered {self.plant.name} on {self.date_watered}'
-
-# Fertilizing Log Model
-class FertilizingLog(models.Model):
-    plant = models.ForeignKey(Plant, related_name='fertilizations', on_delete=models.CASCADE)
-    date_fertilized = models.DateField()
-    fertilizer_type = models.CharField(max_length=100)
-    amount = models.FloatField(help_text="Amount of fertilizer used in grams")
+# plant care log, activities for a specific plant
+class PlantCareLog(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='care_logs')
+    date = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=100)  # Example: Watering, Fertilizing, etc.
+    details = models.TextField()  # Additional notes or details
 
     def __str__(self):
-        return f'Fertilized {self.plant.name} on {self.date_fertilized}'
+        return f"{self.action} on {self.date.strftime('%Y-%m-%d')}"
 
-# Growth Log Model
-class GrowthLog(models.Model):
-    plant = models.ForeignKey(Plant, related_name='growth_logs', on_delete=models.CASCADE)
-    date_logged = models.DateField()
-    previous_growth_stage = models.CharField(max_length=100, choices=Plant._meta.get_field('growth_stage').choices)
-    new_growth_stage = models.CharField(max_length=100, choices=Plant._meta.get_field('growth_stage').choices)
-    notes = models.TextField(blank=True, null=True)
+
+# User profile to track personal plant collection (optional)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    plants = models.ManyToManyField(Plant, related_name='owners')
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.plant.name} growth update on {self.date_logged}'
+        return f"Profile of {self.user.username}"
+
+
+# Observations for plant progress like health condition)
+class PlantObservation(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='observations')
+    date = models.DateTimeField(auto_now_add=True)
+    observation = models.TextField()  # Notes on the plant's condition or growth
+
+    def __str__(self):
+        return f"Observation on {self.plant.name} on {self.date.strftime('%Y-%m-%d')}"

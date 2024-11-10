@@ -1,31 +1,160 @@
-/* Basic container for pages */
+/* General reset and box sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and general page layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Container to center and define width */
 .container {
-    flex: 1;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-/* Contact Form Styles */
-form input, form textarea {
-    width: 100%;
+/* Header Styles */
+.left-header {
+    flex: 1;
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
 }
 
-form button {
-    width: 100%;
+.right-header {
+    flex: 3;
     padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1em;
+    text-align: right;
+}
+
+.website-title h1 {
+    font-size: 30px;
+    color: #2c7a38;
+    font-weight: bold;
+}
+
+/* Header Links */
+.right-header a {
+    text-decoration: none;
+    color: #333;
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+.right-header a:hover {
+    color: #2c7a38;
+}
+
+/* Dropdown for profile image and logout */
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropdown img.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     cursor: pointer;
 }
 
-form button:hover {
-    background-color: #218838;
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.logout-link {
+    text-decoration: none;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logout-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* Content Section */
+.content-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+/* Care Log Icon Styles */
+.care-log-icon {
+    font-size: 20px;
+    color: #2c7a38;
+    margin-right: 20px;
+}
+
+.care-log-icon:hover {
+    color: #1c5a2e;
+}
+
+.care-log-count {
+    background-color: #2c7a38;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 50%;
+    padding: 5px 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+}
+
+/* Admin Panel Styling */
+.admin-links a {
+    color: #2c7a38;
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.admin-links a:hover {
+    color: #1c5a2e;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 0 15px;
+    }
+
+    .right-header {
+        text-align: left;
+        margin-top: 15px;
+    }
+
+    .website-title h1 {
+        font-size: 25px;
+    }
+
+    .right-header a {
+        font-size: 14px;
+        margin-right: 15px;
+    }
+
+    .care-log-icon {
+        font-size: 18px;
+    }
 }

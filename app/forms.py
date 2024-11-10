@@ -1,17 +1,16 @@
 from django import forms
-from .models import WateringLog, FertilizingLog, GrowthLog, Plant
+from .models import PlantCareLog
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
-class WateringLogForm(forms.ModelForm):
+class PlantCareLogForm(forms.ModelForm):
     class Meta:
-        model = WateringLog
-        fields = ['plant', 'date_watered', 'amount']
+        model = PlantCareLog
+        fields = ['action', 'details']
 
-class FertilizingLogForm(forms.ModelForm):
-    class Meta:
-        model = FertilizingLog
-        fields = ['plant', 'date_fertilized', 'fertilizer_type', 'amount']
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField()
 
-class GrowthLogForm(forms.ModelForm):
     class Meta:
-        model = GrowthLog
-        fields = ['plant', 'date_logged', 'previous_growth_stage', 'new_growth_stage', 'notes']
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']

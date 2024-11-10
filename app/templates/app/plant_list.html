@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Plant List</h1>
+  <div class="plant-list">
+    {% for plant in plants %}
+      <div class="plant-card">
+        <img src="{{ plant.image.url }}" alt="{{ plant.name }}">
+        <h3>{{ plant.name }}</h3>
+        <p>{{ plant.species }}</p>
+        <a href="{% url 'plant_detail' pk=plant.pk %}">View Details</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

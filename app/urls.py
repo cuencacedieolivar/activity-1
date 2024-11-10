@@ -2,13 +2,25 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
-    path('contact/', views.contact, name='contact'),
-    path('plant_dashboard/', views.plant_dashboard, name='plant_dashboard'),
-    path('add_plant/', views.add_plant, name='add_plant'),
-    path('add_watering_log/<int:plant_id>/', views.add_watering_log, name='add_watering_log'),
-    path('add_fertilizing_log/<int:plant_id>/', views.add_fertilizing_log, name='add_fertilizing_log'),
-    path('add_growth_log/<int:plant_id>/', views.add_growth_log, name='add_growth_log'),
-    # Other URLs for authentication and other views
+    # List of all plants
+    path('plants/', views.PlantListView.as_view(), name='plant_list'),
+
+    # Detailed view of a single plant
+    path('plants/<int:pk>/', views.PlantDetailView.as_view(), name='plant_detail'),
+
+    # Log care activities for a specific plant
+    path('plants/<int:pk>/care_log/', views.PlantCareLogCreateView.as_view(), name='care_log_create'),
+
+    # Admin Plant List
+    path('admin/plants/', views.PlantListView.as_view(), name='admin_plant_list'),
+
+    # Create a new plant
+    path('admin/plants/new/', views.CreateView.as_view(), name='plant_create'),
+
+    # Update an existing plant
+    path('admin/plants/<int:pk>/edit/', views.PlantUpdateView.as_view(), name='plant_update'),
+
+    # Delete a plant
+    path('admin/plants/<int:pk>/delete/', views.PlantDeleteView.as_view(), name='plant_delete'),
+
 ]
