@@ -2,55 +2,70 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Plant categories to classify plant types
-class PlantCategory(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
-# Represents a plant with essential details
 class Plant(models.Model):
+    VISIBILITY_CHOICES = [
+        ('public', 'Public'),
+        ('private', 'Private'),
+    ]
+
     name = models.CharField(max_length=100)
-    species = models.CharField(max_length=100)
-    category = models.ForeignKey(PlantCategory, on_delete=models.CASCADE, related_name='plants')
-    description = models.TextField()
-    care_instructions = models.TextField()  # an  instruction and info like watering
-    image = models.ImageField(upload_to='plants/')
-    slug = models.SlugField(unique=True, blank=True, null=True)
+    type = models.CharField(max_length=100)
+    care_instructions = models.TextField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='plant_images/', blank=True, null=True)
+    visibility = models.CharField(
+        max_length=7,
+        choices=VISIBILITY_CHOICES,
+        default='public',  # Default visibility is public
+    )
 
     def __str__(self):
         return self.name
 
 
-# plant care log, activities for a specific plant
-class PlantCareLog(models.Model):
+class HealthStatus(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='health_updates')
+    status = models.CharField(max_length=50)
+    update_time = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.plant.name} - {self.status} - {self.update_time}"
+
+class CustomUser(User):
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
+    def __str__(self):
+        return self.username
+
+
+class CareLog(models.Model):
     plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='care_logs')
-    date = models.DateTimeField(auto_now_add=True)
-    action = models.CharField(max_length=100)  # Example: Watering, Fertilizing, etc.
-    details = models.TextField()  # Additional notes or details
+    action = models.CharField(max_length=100)
+    date = models.DateField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.action} on {self.date.strftime('%Y-%m-%d')}"
+        return f"{self.plant.name} - {self.action} - {self.date}"
 
-
-# User profile to track personal plant collection (optional)
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    plants = models.ManyToManyField(Plant, related_name='owners')
-    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-
-    def __str__(self):
-        return f"Profile of {self.user.username}"
-
-
-# Observations for plant progress like health condition)
-class PlantObservation(models.Model):
-    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='observations')
-    date = models.DateTimeField(auto_now_add=True)
-    observation = models.TextField()  # Notes on the plant's condition or growth
+class WateringSchedule(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='watering_schedules')
+    water_frequency = models.CharField(
+        max_length=50,
+        choices=[('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Bi-weekly', 'Bi-weekly')],
+        default='Weekly'
+    )
+    last_watered = models.DateField(blank=True, null=True)
+    next_watering = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"Observation on {self.plant.name} on {self.date.strftime('%Y-%m-%d')}"
+        return f"Watering schedule for {self.plant.name} - Next watering: {self.next_watering}"
+
+class Reminder(models.Model):
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name='reminders')
+    task = models.CharField(max_length=100)
+    reminder_time = models.DateTimeField()
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Reminder for {self.plant.name} - {self.task} - {self.reminder_time}"
