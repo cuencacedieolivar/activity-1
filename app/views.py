@@ -2,7 +2,7 @@ from django.urls import reverse_lazy, reverse
 from .models import Plant, HealthStatus, CareLog, Reminder, WateringSchedule
 from django.views import View
 from django.contrib.auth.views import LogoutView, LoginView
-from django.shortcuts import redirect, get_object_or_404 , render
+from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, TemplateView
@@ -26,15 +26,15 @@ class CustomLoginView(LoginView):
 
 class RegisterView(CreateView):
     model = User
-    form_class = CustomUserCreationForm  # Use your custom form
+    form_class = CustomUserCreationForm
     template_name = 'app/register.html'
-    success_url = reverse_lazy('login')  # Redirect to login page after successful registration
+    success_url = reverse_lazy('login')  # It will redirect to login page if your registration is successful
 
 class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy('login')  # Redirect to login page after logout
+    next_page = reverse_lazy('login')  # It will redirect to login page after logout
 
 class HomePageView(TemplateView):
-    template_name = 'app/home.html'  # Create this template to display products
+    template_name = 'app/home.html'
 
 class PlantListView(ListView):
     model = Plant

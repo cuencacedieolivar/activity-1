@@ -1,32 +1,16 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import (CustomLoginView, RegisterView,
-                    CustomLogoutView,
-                    HomePageView,
-                    PlantListView,
-                    PlantDetailView,
-                    PlantCreateView,
-                    HealthStatusCreateView,
-                    CareLogCreateView,
-                    ReminderCreateView,
-                    CompleteReminderView,
-                    PlantDeleteView,
-                    PlantSearchView,
-                    HealthStatusDetailView,
-                    HealthStatusUpdateView,
-                    HealthStatusDeleteView,
-                    CareLogDetailView,
-                    CareLogUpdateView,
-                    CareLogDeleteView,
-                    ReminderDetailView,
-                    ReminderUpdateView,
-                    ReminderDeleteView,
-                    WateringScheduleDetailView,
-                    WateringScheduleCreateView,
-                    WateringScheduleUpdateView,
-                    WateringScheduleDeleteView,
-                    PlantUpdateView
+from .views import (CustomLoginView, RegisterView,  CustomLogoutView,
+                    HomePageView, PlantListView, PlantDetailView,
+                    PlantCreateView, HealthStatusCreateView, CareLogCreateView,
+                    ReminderCreateView, CompleteReminderView, PlantDeleteView,
+                    PlantSearchView, HealthStatusDetailView, HealthStatusUpdateView,
+                    HealthStatusDeleteView, CareLogDetailView, CareLogUpdateView,
+                    CareLogDeleteView, ReminderDetailView, ReminderUpdateView,
+                    ReminderDeleteView, WateringScheduleDetailView, WateringScheduleCreateView,
+                    WateringScheduleUpdateView, WateringScheduleDeleteView, PlantUpdateView
+
                     )
 
 urlpatterns = [
@@ -35,10 +19,10 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('home/', HomePageView.as_view(), name='home'),
 
-    path('plants/', PlantListView.as_view(), name='plant_list'),  # List all plants
+    path('plants/', PlantListView.as_view(), name='plant_list'),  #
     path('plant/<int:pk>/', PlantDetailView.as_view(), name='plant_detail'),  # View plant details
     path('plant/add/', PlantCreateView.as_view(), name='add_plant'),  # Add new plant
-    path('plant/<int:plant_id>/health-status/add/',HealthStatusCreateView.as_view(), name='add_health_status'),  # Add health status
+    path('plant/<int:plant_id>/health-status/add/',HealthStatusCreateView.as_view(), name='add_health_status'),  # Add a health status
     path('plant/<int:plant_id>/care-log/add/', CareLogCreateView.as_view(), name='add_care_log'),  # Add care log
     path('plant/<int:plant_id>/reminder/add/', ReminderCreateView.as_view(), name='add_reminder'),  # Add reminder
     path('plant/reminder/<int:reminder_id>/complete/', CompleteReminderView.as_view(), name='complete_reminder'),  # Mark reminder as complete
